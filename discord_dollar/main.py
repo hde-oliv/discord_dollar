@@ -122,7 +122,7 @@ async def configure(ctx):
     await ctx.send("Channel added.")
 
 
-@tasks.loop(minutes=0.5)
+@tasks.loop(hours=2)
 @logger.catch()
 async def sub_list():
     logger.debug("Started sub_list task")
