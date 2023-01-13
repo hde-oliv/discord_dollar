@@ -3,6 +3,7 @@ version: "3.7"
 services:
   dollar:
     build:
+      context: .
       dockerfile: Dockerfile
     restart: always
     volumes:
