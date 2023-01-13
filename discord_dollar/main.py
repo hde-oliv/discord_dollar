@@ -5,6 +5,7 @@ from log import get_logger
 from crawler import get_real_dollar_conversion
 from repository import get_table, add_table
 from dotenv import dotenv_values
+from pytz import timezone
 
 config = dotenv_values(".env")
 intents = discord.Intents.default()
@@ -25,7 +26,8 @@ def fetch_exchange_routine():
         return
 
     logger.info("Got conversion result.")
-    time = datetime.now()
+
+    time = datetime.now(tz=timezone("America/Sao_Paulo"))
     hours = time.strftime("%H:%M:%S")
     date = time.strftime("%d/%m")
 
@@ -88,6 +90,23 @@ async def dollar(ctx):
 
 @bot.command()
 @logger.catch()
+async def dollar_now(ctx):
+    logger.debug(
+        "Started dollar_now command. "
+        f"[name={ctx.message.author.name};id={ctx.message.author.id};"
+        f"channel_name={ctx.channel.name};channel_id={ctx.channel.id};"
+        f"guild_name={ctx.guild.name};guild_id={ctx.guild.id}]"
+    )
+
+    fetch_exchange_routine()
+    embed = get_dollar_embed()
+
+    logger.debug("Ended dollar_now command.")
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+@logger.catch()
 async def configure(ctx):
     logger.debug(
         "Started configure command. "
@@ -103,19 +122,20 @@ async def configure(ctx):
     await ctx.send("Channel added.")
 
 
-@tasks.loop(hours=2)
+@tasks.loop(minutes=0.5)
 @logger.catch()
 async def sub_list():
     logger.debug("Started sub_list task")
+
+    fetch_exchange_routine()
+    logger.info("Fetched new values.")
+
     try:
         channels = get_table("channels")
         channels = channels.drop_duplicates()
     except:
         logger.warning("No channels to send.")
         return
-
-    fetch_exchange_routine()
-    logger.info("Fetched new values.")
 
     embed = get_dollar_embed()
     logger.info("Embed created.")
@@ -126,6 +146,11 @@ async def sub_list():
     logger.info("Embed sent to all channels.")
 
     logger.debug("Ended sub_list task")
+
+
+@sub_list.before_loop
+async def before_looping():
+    await bot.wait_until_ready()
 
 
 if __name__ == "__main__":
