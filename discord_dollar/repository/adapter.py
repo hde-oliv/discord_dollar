@@ -1,6 +1,5 @@
-from sqlalchemy import create_engine
 import pandas as pd
-
+from sqlalchemy import create_engine
 
 engine = create_engine(f"sqlite:///data/exchange.db")
 

@@ -1,7 +1,7 @@
 import discord
+
 from discord_dollar.configure.log import get_logger
 from discord_dollar.repository.adapter import get_table
-
 
 logger = get_logger()
 

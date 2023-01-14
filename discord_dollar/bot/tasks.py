@@ -1,9 +1,11 @@
-from .conf import bot
 from discord.ext import tasks
-from discord_dollar.configure.log import get_logger
-from discord_dollar.repository.adapter import get_table
+
 from discord_dollar.bot.routines import fetch_exchange_routine
 from discord_dollar.bot.utils import get_dollar_embed
+from discord_dollar.configure.log import get_logger
+from discord_dollar.repository.adapter import get_table
+
+from .conf import bot
 
 logger = get_logger()
 
