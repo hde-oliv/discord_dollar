@@ -41,7 +41,3 @@ def get_real_dollar_conversion():
         variation = variation.replace(",", ".")
 
         return dollar, variation
-
-
-if __name__ == "__main__":
-    get_real_dollar_conversion()
