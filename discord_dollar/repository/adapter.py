@@ -1,14 +1,30 @@
 import pandas as pd
-from sqlalchemy import create_engine
-
-engine = create_engine(f"sqlite:///data/exchange.db")
-
-
-def add_table(table_name, data: dict):
-    df = pd.DataFrame(data=data)
-    df.to_sql(table_name, con=engine, if_exists="append", index=None)
+from .config import engine
+from sqlalchemy.orm import Session
+from . import models
 
 
-def get_table(table_name) -> pd.DataFrame:
-    df = pd.read_sql_table(table_name, con=engine)
+def get_usd_to_brl_table() -> pd.DataFrame:
+    df = pd.read_sql_table("usd_to_brl", con=engine)
     return df
+
+
+def get_dollar_subscriptions_table() -> pd.DataFrame:
+    df = pd.read_sql_table("dollar_subscription", con=engine)
+    return df
+
+
+def add_usd_to_brl_item(db: Session, item: dict):
+    db_item = models.USDToBRL(**item)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return True
+
+
+def add_dollar_subscription_item(db: Session, item: dict):
+    db_item = models.DollarSubscription(**item)
+    db.add(db_item)
+    db.commit()
+    db.refresh(db_item)
+    return True

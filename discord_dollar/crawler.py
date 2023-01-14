@@ -6,7 +6,7 @@ from discord_dollar.log import logger
 from typing import Tuple
 
 
-def get_usd_to_brl_exchange_rate() -> Tuple[str, str]:
+def get_usd_to_brl_exchange_rate() -> Tuple[float, float]:
     logger.debug("Started get_usd_to_brl_exchange_rate")
     options = webdriver.FirefoxOptions()
     options.add_argument("--headless")
@@ -41,4 +41,4 @@ def get_usd_to_brl_exchange_rate() -> Tuple[str, str]:
         variation = variation.replace(",", ".")
 
         logger.debug("Ended get_usd_to_brl_exchange_rate")
-        return dollar, variation
+        return float(dollar), float(variation)
