@@ -2,11 +2,9 @@ from datetime import datetime
 
 from pytz import timezone
 
-from discord_dollar.configure.log import get_logger
+from discord_dollar.configure.log import logger
 from discord_dollar.crawler.crawler import get_real_dollar_conversion
 from discord_dollar.repository.adapter import add_table
-
-logger = get_logger()
 
 
 @logger.catch()

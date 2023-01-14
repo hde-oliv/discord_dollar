@@ -1,9 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-from discord_dollar.configure.log import get_logger
-
-logger = get_logger()
+from discord_dollar.configure.log import logger
 
 
 def get_real_dollar_conversion():
