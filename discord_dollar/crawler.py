@@ -3,9 +3,11 @@ from selenium.webdriver.common.by import By
 
 from discord_dollar.log import logger
 
+from typing import Tuple
 
-def get_real_dollar_conversion():
-    logger.debug("Started get_real_dollar_conversion")
+
+def get_usd_to_brl_exchange_rate() -> Tuple[str, str]:
+    logger.debug("Started get_usd_to_brl_exchange_rate")
     options = webdriver.FirefoxOptions()
     options.add_argument("--headless")
     options.add_argument("--ignore-ssl-errors=yes")
@@ -32,12 +34,11 @@ def get_real_dollar_conversion():
                 f"Failed to grab information on page. [dollar={dollar};variation={variation}]"
             )
 
-        logger.debug("Ended get_real_dollar_conversion")
-
         dollar = dollar.get_attribute("innerHTML")
         variation = variation.get_attribute("innerHTML")
 
         dollar = dollar.replace(",", ".")
         variation = variation.replace(",", ".")
 
+        logger.debug("Ended get_usd_to_brl_exchange_rate")
         return dollar, variation
