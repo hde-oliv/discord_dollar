@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from log import get_logger
+from discord_dollar.configure.log import get_logger
 
 logger = get_logger()
 
