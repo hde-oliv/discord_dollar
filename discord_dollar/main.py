@@ -6,6 +6,7 @@ from crawler import get_real_dollar_conversion
 from repository import get_table, add_table
 from dotenv import dotenv_values
 from pytz import timezone
+import os
 
 config = dotenv_values(".env")
 intents = discord.Intents.default()
@@ -166,8 +167,13 @@ async def before_looping():
     await bot.wait_until_ready()
 
 
-if __name__ == "__main__":
+@logger.catch()
+def main():
     logger.debug("Started main")
     sub_list.start()
-    bot.run(config["DISCORD_TOKEN"])
+    bot.run(os.getenv("DISCORD_TOKEN"))
     logger.debug("Ended main")
+
+
+if __name__ == "__main__":
+    main()
