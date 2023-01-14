@@ -1,1 +1,1 @@
-from .conf import bot as client
+from .config import client

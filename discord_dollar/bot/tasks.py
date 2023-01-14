@@ -5,7 +5,7 @@ from discord_dollar.bot.utils import get_dollar_embed
 from discord_dollar.log import logger
 from discord_dollar.repository.adapter import get_table
 
-from .conf import bot
+from .config import client
 
 
 @tasks.loop(hours=2)
@@ -27,7 +27,7 @@ async def sub_list():
     logger.info("Embed created.")
 
     for i, r in channels.iterrows():
-        channel = bot.get_channel(r["channel"])
+        channel = client.get_channel(r["channel"])
         await channel.send(embed=embed)
     logger.info("Embed sent to all channels.")
 
@@ -36,4 +36,4 @@ async def sub_list():
 
 @sub_list.before_loop
 async def before_looping():
-    await bot.wait_until_ready()
+    await client.wait_until_ready()

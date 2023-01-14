@@ -1,4 +1,4 @@
-from conf import bot
+from .config import client
 
 from discord_dollar.bot.routines import fetch_exchange_routine
 from discord_dollar.bot.utils import get_dollar_embed
@@ -6,7 +6,7 @@ from discord_dollar.log import logger
 from discord_dollar.repository.adapter import add_table, get_table
 
 
-@bot.command()
+@client.command()
 @logger.catch()
 async def dollar(ctx):
     logger.debug(
@@ -22,7 +22,7 @@ async def dollar(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command()
+@client.command()
 @logger.catch()
 async def dollar_now(ctx):
     logger.debug(
@@ -39,7 +39,7 @@ async def dollar_now(ctx):
     await ctx.send(embed=embed)
 
 
-@bot.command()
+@client.command()
 @logger.catch()
 async def configure(ctx):
     logger.debug(
