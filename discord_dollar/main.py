@@ -5,7 +5,7 @@ sys.path.append(".")
 
 from discord_dollar.bot import client
 from discord_dollar.bot.tasks import sub_list
-from discord_dollar.configure.log import logger
+from discord_dollar.log import logger
 
 
 @logger.catch()

@@ -2,7 +2,7 @@ from conf import bot
 
 from discord_dollar.bot.routines import fetch_exchange_routine
 from discord_dollar.bot.utils import get_dollar_embed
-from discord_dollar.configure.log import logger
+from discord_dollar.log import logger
 from discord_dollar.repository.adapter import add_table, get_table
 
 
