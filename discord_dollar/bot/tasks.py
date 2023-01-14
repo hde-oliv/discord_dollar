@@ -1,7 +1,7 @@
 from discord.ext import tasks
 
-from discord_dollar.bot.routines import fetch_exchange_routine
-from discord_dollar.bot.utils import get_dollar_embed
+from discord_dollar.bot.routines import usd_to_brl_routine
+from discord_dollar.bot.utils import create_dollar_embed
 from discord_dollar.log import logger
 from discord_dollar.repository.adapter import get_table
 
@@ -10,10 +10,10 @@ from .config import client
 
 @tasks.loop(hours=2)
 @logger.catch()
-async def sub_list():
+async def dollar_subscribers():
     logger.debug("Started sub_list task")
 
-    fetch_exchange_routine()
+    usd_to_brl_routine()
     logger.info("Fetched new values.")
 
     try:
@@ -23,7 +23,7 @@ async def sub_list():
         logger.warning("No channels to send.")
         return
 
-    embed = get_dollar_embed()
+    embed = create_dollar_embed()
     logger.info("Embed created.")
 
     for i, r in channels.iterrows():
@@ -34,6 +34,6 @@ async def sub_list():
     logger.debug("Ended sub_list task")
 
 
-@sub_list.before_loop
+@dollar_subscribers.before_loop
 async def before_looping():
     await client.wait_until_ready()

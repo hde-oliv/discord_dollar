@@ -1,16 +1,13 @@
 import discord
 
+import pandas as pd
+
 from discord_dollar.log import logger
 from discord_dollar.repository.adapter import get_table
 
 
 @logger.catch()
-def get_dollar_embed():
-    df = get_table("usd_to_brl")
-    logger.info("Got table.")
-
-    latest = df.iloc[-1]
-
+def create_dollar_embed(latest: pd.DataFrame):
     def check_variation():
         variation = float(latest["variation"])
 

@@ -1,7 +1,7 @@
 from .config import client
 
 from discord_dollar.bot.routines import fetch_exchange_routine
-from discord_dollar.bot.utils import get_dollar_embed
+from discord_dollar.bot.utils import create_dollar_embed
 from discord_dollar.log import logger
 from discord_dollar.repository.adapter import add_table, get_table
 
@@ -16,7 +16,12 @@ async def dollar(ctx):
         f"guild_name={ctx.guild.name};guild_id={ctx.guild.id}]"
     )
 
-    embed = get_dollar_embed()
+    df = get_table("usd_to_brl")
+    logger.info("Got table.")
+    latest = df.iloc[-1]
+
+    embed = create_dollar_embed(latest)
+    logger.info("Got embed.")
 
     logger.debug("Ended dollar command.")
     await ctx.send(embed=embed)
@@ -33,7 +38,12 @@ async def dollar_now(ctx):
     )
 
     fetch_exchange_routine()
-    embed = get_dollar_embed()
+
+    df = get_table("usd_to_brl")
+    logger.info("Got table.")
+    latest = df.iloc[-1]
+
+    embed = create_dollar_embed(latest)
 
     logger.debug("Ended dollar_now command.")
     await ctx.send(embed=embed)
@@ -41,9 +51,9 @@ async def dollar_now(ctx):
 
 @client.command()
 @logger.catch()
-async def configure(ctx):
+async def subscribe(ctx):
     logger.debug(
-        "Started configure command. "
+        "Started subscribe command. "
         f"[name={ctx.message.author.name};id={ctx.message.author.id};"
         f"channel_name={ctx.channel.name};channel_id={ctx.channel.id};"
         f"guild_name={ctx.guild.name};guild_id={ctx.guild.id}]"
@@ -56,7 +66,7 @@ async def configure(ctx):
 
     if channel in channels:
         logger.info("Channel already added.")
-        logger.debug("Ended configure command.")
+        logger.debug("Ended subscribe command.")
         await ctx.send("Channel already added.")
     else:
         data = {"channel": [ctx.channel.id]}
@@ -64,6 +74,6 @@ async def configure(ctx):
 
         logger.info("Added table.")
         logger.info("Channel added.")
-        logger.debug("Ended configure command.")
+        logger.debug("Ended subscribe command.")
 
         await ctx.send("Channel added.")
