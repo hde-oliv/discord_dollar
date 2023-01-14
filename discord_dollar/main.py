@@ -114,12 +114,25 @@ async def configure(ctx):
         f"channel_name={ctx.channel.name};channel_id={ctx.channel.id};"
         f"guild_name={ctx.guild.name};guild_id={ctx.guild.id}]"
     )
-    data = {"channel": [ctx.channel.id]}
+    df = get_table("channels")
+    logger.info("Got table.")
 
-    add_table("channels", data)
-    logger.info("Added table.")
-    logger.debug("Ended configure command.")
-    await ctx.send("Channel added.")
+    channels = df.ix[:, 0]
+    channel = ctx.channel.id
+
+    if channel in channels:
+        logger.info("Channel already added.")
+        logger.debug("Ended configure command.")
+        await ctx.send("Channel already added.")
+    else:
+        data = {"channel": [ctx.channel.id]}
+        add_table("channels", data)
+
+        logger.info("Added table.")
+        logger.info("Channel added.")
+        logger.debug("Ended configure command.")
+
+        await ctx.send("Channel added.")
 
 
 @tasks.loop(hours=2)
