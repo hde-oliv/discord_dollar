@@ -8,6 +8,7 @@ from discord_dollar.repository.adapter import (
 )
 from discord_dollar.repository.config import SessionLocal
 from discord.ext import commands
+from sqlalchemy.exc import IntegrityError
 
 
 @commands.command()
@@ -65,30 +66,33 @@ async def dollar_subscribe(ctx):
     df = get_dollar_subscriptions_table()
     logger.info("Got table.")
 
-    channels = df.ix[:, 0]
+    channels = df.loc[:, "channel_id"]
+    channels = channels.apply(int)
+    logger.debug(f"Channel dataframe. [{channels}]")
     channel = ctx.channel.id
 
-    if channel in channels:
+    data = {
+        "channel_id": str(ctx.channel.id),
+        "guild_id": str(ctx.guild.id),
+        "user_id": str(ctx.message.author.id),
+    }
+
+    try:
+        db = SessionLocal()
+        add_dollar_subscription_item(db, data)
+    except IntegrityError:
         logger.info("Channel already added.")
         logger.debug("Ended subscribe command.")
         await ctx.send("Channel already added.")
+    except Exception as e:
+        logger.warning(f"Could not add item to database. [exception={repr(e)}]")
+        logger.debug("Ended dollar_subscribe command.")
     else:
-        data = {
-            "channel_id": ctx.channel.id,
-            "guild_id": ctx.guild.id,
-            "user_id": ctx.message.author.id,
-        }
+        logger.info("Added to table.")
+        logger.info("Channel added.")
+        logger.debug("Ended dollar_subscribe command.")
+        await ctx.send("Channel added.")
 
-        try:
-            db = SessionLocal()
-            add_dollar_subscription_item(db, data)
-        except Exception as e:
-            logger.warning(f"Could not add item to database. [exception={repr(e)}]")
-        else:
-            logger.info("Added to table.")
-            logger.info("Channel added.")
-            logger.debug("Ended dollar_subscribe command.")
-            await ctx.send("Channel added.")
 
 @logger.catch()
 def register_commands(client):

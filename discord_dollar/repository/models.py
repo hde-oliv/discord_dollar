@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, Numeric
 
 from .config import Base
 
@@ -7,9 +7,9 @@ class DollarSubscription(Base):
     __tablename__ = "dollar_subscription"
 
     id = Column(Integer, primary_key=True, index=True)
-    channel_id = Column(Integer, unique=True, index=True)
-    guild_id = Column(Integer, index=True)
-    user_id = Column(Integer)
+    channel_id = Column(String, unique=True)
+    guild_id = Column(String)
+    user_id = Column(String)
 
 
 class USDToBRL(Base):

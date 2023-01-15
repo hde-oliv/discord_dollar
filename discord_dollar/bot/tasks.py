@@ -3,7 +3,10 @@ from discord.ext import tasks
 from discord_dollar.bot.routines import usd_to_brl_routine
 from discord_dollar.bot.utils import create_dollar_embed
 from discord_dollar.log import logger
-from discord_dollar.repository.adapter import get_dollar_subscriptions_table
+from discord_dollar.repository.adapter import (
+    get_dollar_subscriptions_table,
+    get_usd_to_brl_table,
+)
 
 from .config import client
 
@@ -18,17 +21,24 @@ async def dollar_subscribers():
 
     channels = get_dollar_subscriptions_table()
     logger.info("Got table.")
-    
+
     if len(channels.index) == 0:
         logger.info("No channels to send.")
         logger.debug("Ended dollar_subscription task")
         return
 
-    embed = create_dollar_embed()
+    df = get_usd_to_brl_table()
+    logger.info("Got table.")
+    latest = df.iloc[-1]
+
+    embed = create_dollar_embed(latest)
     logger.info("Embed created.")
 
     for i, r in channels.iterrows():
-        channel = client.get_channel(r["channel_id"])
+        channel = client.get_channel(int(r["channel_id"]))
+        logger.debug(
+            f"Sending dollar to channel. [channel={channel};channel_id={r['channel_id']}"
+        )
         await channel.send(embed=embed)
         logger.debug(f"Embed sent to {r['channel_id']}")
     logger.info("Embed sent to all channels.")
