@@ -1,0 +1,9 @@
+.git
+.vscode
+.env
+.vscode
+geckodriver.log
+__pycache__
+data
+.env.example
+
